@@ -7,6 +7,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { HttpModule } from '@nestjs/axios';
 import { GlobalService } from './services/global.service';
 import { CommunicationService } from './services/communication.service';
+import { CommonService } from './services/common.service';
 
 @Module({
   imports: [
@@ -17,6 +18,6 @@ import { CommunicationService } from './services/communication.service';
     HttpModule
   ],
   controllers: [AppController],
-  providers: [AppService, FastqService, GlobalService, CommunicationService],
+  providers: [AppService, FastqService, GlobalService, CommunicationService, CommonService],
 })
 export class AppModule {}

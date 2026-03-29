@@ -9,6 +9,8 @@ export class AnalysisModel {
 
     data_type: string;
 
+    sequencing_type: string;
+
     control: string;
 
     genotype: string;

@@ -4,6 +4,8 @@ export const SAM_FILE = 'analysis.aligned.sam'
 
 export const BAM_FILE = 'analysis.aligned.bam'
 
+export const BAM_INDEX_FILE = 'analysis.aligned.sorted.bam.bai'
+
 export const SORTED_BAM_FILE = 'analysis.aligned.sorted.bam'
 
 export const BCF_FILE = 'analysis.bcf'

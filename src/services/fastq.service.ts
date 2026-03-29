@@ -36,7 +36,8 @@ export class FastqService {
                 `cd ${this.s3Dir}/${analysisFolder}`,
                 `${BWA_CMD} mem ${this.hg19_fasta} ${read1} ${read2} > ${SAM_FILE}`,
                 `${SAMTOOLS_CMD} view -S -b ${SAM_FILE} > ${BAM_FILE}`,
-                `${SAMTOOLS_CMD} sort -o ${SORTED_BAM_FILE} ${BAM_FILE}`
+                `${SAMTOOLS_CMD} sort -o ${SORTED_BAM_FILE} ${BAM_FILE}`,
+                `${SAMTOOLS_CMD} index ${SORTED_BAM_FILE}`
             ]
 
             return await this.commonService.runCommand(command.join(' && '));
@@ -48,7 +49,8 @@ export class FastqService {
                 `cd ${this.s3Dir}/${analysisFolder}`,
                 `${BWA_CMD} mem ${this.hg38_fasta} ${read1} ${read2} > ${SAM_FILE}`,
                 `${SAMTOOLS_CMD} view -S -b ${SAM_FILE} > ${BAM_FILE}`,
-                `${SAMTOOLS_CMD} sort -o ${SORTED_BAM_FILE} ${BAM_FILE}`
+                `${SAMTOOLS_CMD} sort -o ${SORTED_BAM_FILE} ${BAM_FILE}`,
+                `${SAMTOOLS_CMD} index ${SORTED_BAM_FILE}`
             ]
 
             return await this.commonService.runCommand(command.join(' && '));

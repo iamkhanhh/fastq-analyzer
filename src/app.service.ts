@@ -90,7 +90,7 @@ export class AppService {
     let copyOriginalFile = '';
     let commandZip = '';
     this.isGZ_fast1 = this.analysis.fastq1.file_path.indexOf('.gz') != -1 ? true : false;
-    this.isGZ_fast2 = this.analysis.fastq1.file_path.indexOf('.gz') != -1 ? true : false;
+    this.isGZ_fast2 = this.analysis.fastq2.file_path.indexOf('.gz') != -1 ? true : false;
     this.fastq1 = `${this.analysisFolder}/${this.isGZ_fast1 ? FASTQ1_FILE_ZIP : FASTQ1_FILE}`;
     this.fastq2 = `${this.analysisFolder}/${this.isGZ_fast2 ? FASTQ2_FILE_ZIP : FASTQ2_FILE}`;
 
@@ -108,8 +108,8 @@ export class AppService {
       copyOriginalFile += ` && cp ${this.analysis.fastq2.file_path} ${this.fastq2}`;
     }
 
-    if ((this.isGZ_fast1 && this.isGZ_fast2) || (!this.isGZ_fast1 && !this.isGZ_fast2)) {
-      this.logger.log('Both fastq files are not in the same format');
+    if (!((this.isGZ_fast1 && this.isGZ_fast2) || (!this.isGZ_fast1 && !this.isGZ_fast2))) {
+      this.logger.log('Fastq files are not in the same format, normalizing compression');
 
       if (!this.isGZ_fast1) {
         commandZip += ` && ${BGZIP_CMD} ${this.fastq1}`;

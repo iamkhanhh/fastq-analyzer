@@ -1,5 +1,7 @@
 export const VCF_OUTPUT_FILE = 'analysis.fastq.vcf.gz'
 
+export const VCF_RAW_FILE = 'analysis.raw.vcf.gz'
+
 export const SAM_FILE = 'analysis.aligned.sam'
 
 export const BAM_FILE = 'analysis.aligned.bam'

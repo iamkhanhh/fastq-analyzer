@@ -8,7 +8,6 @@ RUN apt-get update && apt-get install -y \
     bzip2 \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-
 RUN wget --no-check-certificate \
         https://sourceforge.net/projects/bio-bwa/files/bwakit/bwakit-0.7.15_x64-linux.tar.bz2/download \
         -O bwa.tar.bz2 \
@@ -18,6 +17,8 @@ RUN wget --no-check-certificate \
     && rm bwa.tar.bz2
 
 ENV PATH=$PATH:/apps/bwa.kit
+
+RUN npm install -g pm2
 
 WORKDIR /app
 
@@ -29,4 +30,4 @@ RUN npm run build
 
 EXPOSE 3002
 
-CMD npm run start
+CMD ["pm2-runtime", "ecosystem.config.js"]

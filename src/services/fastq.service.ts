@@ -68,7 +68,6 @@ export class FastqService {
         }
 
         let command = [
-            `set -euo pipefail`,
             `cd ${this.s3Dir}/${analysisFolder}`,
             `[ -f "${BAM_INDEX_FILE}" ] || samtools index ${SORTED_BAM_FILE}`,
             `${BCFTOOLS_CMD} mpileup -O b -o ${BCF_FILE} -f ${reference} -a FORMAT/DP,FORMAT/AD ${SORTED_BAM_FILE}`,

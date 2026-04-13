@@ -73,7 +73,7 @@ export class FastqService {
             `${BCFTOOLS_CMD} mpileup -O b -o ${BCF_FILE} -f ${reference} -a FORMAT/DP,FORMAT/AD ${SORTED_BAM_FILE}`,
             `${BCFTOOLS_CMD} call --ploidy 2 -m -v -Oz -o ${VCF_RAW_FILE} ${BCF_FILE}`,
             `${BCFTOOLS_CMD} index -t ${VCF_RAW_FILE}`,
-            `${BCFTOOLS_CMD}  filter -i 'QUAL>=20 && DP>=10' -Oz -o ${VCF_OUTPUT_FILE} ${VCF_RAW_FILE}`,
+            `${BCFTOOLS_CMD} filter -i 'QUAL>=20 && FORMAT/DP>=10' -Oz -o ${VCF_OUTPUT_FILE} ${VCF_RAW_FILE}`,
             `${BCFTOOLS_CMD} index -t ${VCF_OUTPUT_FILE}`
         ]
         

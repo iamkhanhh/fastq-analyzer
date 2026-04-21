@@ -65,21 +65,44 @@ export class AppService {
   }
 
   async analyze(analysis: AnalysisModel) {
-    this.logger.log(`Analyzing VCF for analysis ID: ${analysis.id}`);
+    this.logger.log(`Starting GATK pipeline for analysis ID: ${analysis.id}`);
     try {
-
-      this.analysis = analysis;
+      this.analysis       = analysis;
       this.analysisFolder = this.commonService.getAnalysisFolder(analysis);
 
       await this.prepreocess();
 
-      await this.fastqService.alignVarriant(analysis.assembly, this.analysisFolder, this.isGZ_fast1);
+      await this.fastqService.alignVariant(
+        analysis.assembly,
+        this.analysisFolder,
+        this.isGZ_fast1,
+        analysis.id,
+      );
 
-      await this.fastqService.variantCalling(analysis.assembly, this.analysisFolder);
+      await this.fastqService.markDuplicates(this.analysisFolder);
 
-      this.logger.log('Done Analysis')
+      await this.fastqService.baseRecalibration(
+        analysis.assembly,
+        this.analysisFolder,
+        analysis.sequencing_type,
+      );
+
+      await this.fastqService.haplotypeCall(
+        analysis.assembly,
+        this.analysisFolder,
+        analysis.sequencing_type,
+      );
+
+      await this.fastqService.genotypeGvcf(
+        analysis.assembly,
+        this.analysisFolder,
+      );
+
+      await this.fastqService.filterVariants(this.analysisFolder);
+
+      this.logger.log(`GATK pipeline completed for analysis ID: ${analysis.id}`);
     } catch (error) {
-      this.logger.error(`Error analyzing VCF for analysis ID ${this.analysis.id}`, error);
+      this.logger.error(`GATK pipeline failed for analysis ID ${this.analysis.id}`, error);
       throw error;
     }
   }

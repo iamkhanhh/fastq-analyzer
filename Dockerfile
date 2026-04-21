@@ -1,4 +1,9 @@
-FROM node:20
+FROM broadinstitute/gatk:4.5.0.0
+
+RUN apt-get update && apt-get install -y curl && \
+    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN apt-get update && apt-get install -y \
     samtools \
@@ -8,15 +13,16 @@ RUN apt-get update && apt-get install -y \
     bzip2 \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# BWA-MEM2
 RUN wget --no-check-certificate \
-        https://sourceforge.net/projects/bio-bwa/files/bwakit/bwakit-0.7.15_x64-linux.tar.bz2/download \
-        -O bwa.tar.bz2 \
-    && tar -xvjf bwa.tar.bz2 \
+        https://github.com/bwa-mem2/bwa-mem2/releases/download/v2.2.1/bwa-mem2-2.2.1_x64-linux.tar.bz2 \
+        -O bwa-mem2.tar.bz2 \
+    && tar -xvjf bwa-mem2.tar.bz2 \
     && mkdir -p /apps \
-    && mv bwa.kit /apps/bwa.kit \
-    && rm bwa.tar.bz2
+    && mv bwa-mem2-2.2.1_x64-linux /apps/bwa-mem2 \
+    && rm bwa-mem2.tar.bz2
 
-ENV PATH=$PATH:/apps/bwa.kit
+ENV PATH=$PATH:/apps/bwa-mem2
 
 RUN npm install -g pm2
 

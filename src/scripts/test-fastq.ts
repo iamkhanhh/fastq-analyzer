@@ -7,13 +7,97 @@ import { AppService } from '../app.service';
 import { AnalysisModel } from '../models/analysis.model';
 import { ConfigService } from '@nestjs/config';
 
-// ── Mock pending sample ────────────────────────────────────────────────────
+// ── Parse assembly argument ────────────────────────────────────────────────
+const VALID_ASSEMBLIES = ['hg19', 'hg38'];
+const assembly = process.argv[2];
+
+if (!assembly || !VALID_ASSEMBLIES.includes(assembly)) {
+    console.error(`Usage: npm run test-fastq -- <assembly>`);
+    console.error(`  assembly: ${VALID_ASSEMBLIES.join(' | ')}`);
+    console.error(`\nExample:`);
+    console.error(`  npm run test-fastq -- hg19`);
+    console.error(`  npm run test-fastq -- hg38`);
+    process.exit(1);
+}
+
+// ── Mock samples per assembly ──────────────────────────────────────────────
+const MOCK_SAMPLES: Record<string, Partial<AnalysisModel>> = {
+    hg19: {
+        id: 7,
+        assembly: 'hg19',
+        igv_local_path: 'user_files/1/7',
+        fastq1: {
+            id: 22,
+            createdAt: new Date('2025-09-06T22:16:12.000Z'),
+            updatedAt: new Date('2025-09-06T22:17:58.000Z'),
+            original_name: 'NA12878_L1_1.fastq.gz',
+            file_size: 34634037,
+            file_type: 'fastq',
+            upload_name: 'NA12878_L1_1-1757222172770-48db1815-a510-4f54-86b9-b7ac3d28721b.fq.gz',
+            is_deleted: 0,
+            file_path: 'uploads/1/NA12878_L1_1.fastq.gz',
+            user_created: 1,
+            sample_id: 16,
+            fastq_pair_index: 1,
+            upload_status: 1,
+        },
+        fastq2: {
+            id: 23,
+            createdAt: new Date('2025-09-06T22:16:17.000Z'),
+            updatedAt: new Date('2025-09-06T22:17:58.000Z'),
+            original_name: 'NA12878_L1_2.fastq.gz',
+            file_size: 35590526,
+            file_type: 'fastq',
+            upload_name: 'NA12878_L1_2-1757222177743-29fe75e5-11fa-49a6-8161-00da5f37a68d.fq.gz',
+            is_deleted: 0,
+            file_path: 'uploads/1/NA12878_L1_2.fastq.gz',
+            user_created: 1,
+            sample_id: 16,
+            fastq_pair_index: 2,
+            upload_status: 1,
+        },
+    },
+    hg38: {
+        id: 8,
+        assembly: 'hg38',
+        igv_local_path: 'user_files/1/8',
+        fastq1: {
+            id: 24,
+            createdAt: new Date('2025-09-06T22:16:12.000Z'),
+            updatedAt: new Date('2025-09-06T22:17:58.000Z'),
+            original_name: 'NA12878_L1_1.fastq.gz',
+            file_size: 34634037,
+            file_type: 'fastq',
+            upload_name: 'NA12878_L1_1-1757222172770-48db1815-a510-4f54-86b9-b7ac3d28721b.fq.gz',
+            is_deleted: 0,
+            file_path: 'uploads/1/NA12878_L1_1.fastq.gz',
+            user_created: 1,
+            sample_id: 16,
+            fastq_pair_index: 1,
+            upload_status: 1,
+        },
+        fastq2: {
+            id: 25,
+            createdAt: new Date('2025-09-06T22:16:17.000Z'),
+            updatedAt: new Date('2025-09-06T22:17:58.000Z'),
+            original_name: 'NA12878_L1_2.fastq.gz',
+            file_size: 35590526,
+            file_type: 'fastq',
+            upload_name: 'NA12878_L1_2-1757222177743-29fe75e5-11fa-49a6-8161-00da5f37a68d.fq.gz',
+            is_deleted: 0,
+            file_path: 'uploads/1/NA12878_L1_2.fastq.gz',
+            user_created: 1,
+            sample_id: 16,
+            fastq_pair_index: 2,
+            upload_status: 1,
+        },
+    },
+};
+
 const MOCK_ANALYSIS: AnalysisModel = {
-    id: 6,
     name: 'test fastq',
     user_id: 1,
     sequencing_type: 'WES',
-    igv_local_path: 'user_files/1/6',
     sample_id: 16,
     project_id: 14,
     p_type: 'fastq',
@@ -27,39 +111,9 @@ const MOCK_ANALYSIS: AnalysisModel = {
     is_deleted: 0,
     pipeline_id: 1,
     upload_id: 22,
-    assembly: 'hg19',
     createdAt: new Date('2026-03-16T23:18:52.000Z'),
     updatedAt: new Date('2026-03-16T23:18:52.000Z'),
-    fastq1: {
-        id: 22,
-        createdAt: new Date('2025-09-06T22:16:12.000Z'),
-        updatedAt: new Date('2025-09-06T22:17:58.000Z'),
-        original_name: 'K450018155_L01_57_1.fq.gz',
-        file_size: 34634037,
-        file_type: 'fastq',
-        upload_name: 'K450018155_L01_57_1-1757222172770-48db1815-a510-4f54-86b9-b7ac3d28721b.fq.gz',
-        is_deleted: 0,
-        file_path: 'uploads/1/K450018155_L01_57_1-1757222172770-48db1815-a510-4f54-86b9-b7ac3d28721b.fq.gz',
-        user_created: 1,
-        sample_id: 16,
-        fastq_pair_index: 1,
-        upload_status: 1,
-    },
-    fastq2: {
-        id: 23,
-        createdAt: new Date('2025-09-06T22:16:17.000Z'),
-        updatedAt: new Date('2025-09-06T22:17:58.000Z'),
-        original_name: 'K450018155_L01_57_2.fq.gz',
-        file_size: 35590526,
-        file_type: 'fastq',
-        upload_name: 'K450018155_L01_57_2-1757222177743-29fe75e5-11fa-49a6-8161-00da5f37a68d.fq.gz',
-        is_deleted: 0,
-        file_path: 'uploads/1/K450018155_L01_57_2-1757222177743-29fe75e5-11fa-49a6-8161-00da5f37a68d.fq.gz',
-        user_created: 1,
-        sample_id: 16,
-        fastq_pair_index: 2,
-        upload_status: 1,
-    },
+    ...MOCK_SAMPLES[assembly],
 } as any;
 
 // ── Minimal stubs (no HTTP, no DB) ─────────────────────────────────────────
